@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import TodoList from './components/TodoList';
 import './App.css';
 
+const API_URL = 'https://your-render-backend-url/api/todos'; // Replace with your actual Render backend URL
+
 const App = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState('');
@@ -9,7 +11,7 @@ const App = () => {
   const [deadlineTime, setDeadlineTime] = useState('');
 
   const fetchTodos = async () => {
-    const response = await fetch('http://localhost:5000/api/todos');
+    const response = await fetch(API_URL);
     const data = await response.json();
     setTodos(data);
   };
@@ -24,7 +26,7 @@ const App = () => {
     if (deadlineDate) {
       deadline = deadlineTime ? new Date(`${deadlineDate}T${deadlineTime}`) : new Date(deadlineDate);
     }
-    const response = await fetch('http://localhost:5000/api/todos', {
+    const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: newTodo, deadline }),
@@ -39,7 +41,7 @@ const App = () => {
   const toggleComplete = async (id) => {
     const todo = todos.find((t) => t._id === id);
     if (!todo) return;
-    const response = await fetch(`http://localhost:5000/api/todos/${id}`, {
+    const response = await fetch(`${API_URL}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ completed: !todo.completed }),
@@ -49,7 +51,7 @@ const App = () => {
   };
 
   const deleteTodo = async (id) => {
-    await fetch(`http://localhost:5000/api/todos/${id}`, {
+    await fetch(`${API_URL}/${id}`, {
       method: 'DELETE',
     });
     setTodos(todos.filter((t) => t._id !== id));
